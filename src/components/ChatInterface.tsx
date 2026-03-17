@@ -11,12 +11,12 @@ interface ChatInterfaceProps {
 
 const INITIAL_MESSAGE_ES: Message = {
   role: 'assistant',
-  content: "¡Hola! Qué gusto que estés aquí. Te cuento rápido: estamos buscando a latinos con ganas reales de salir adelante y mejorar su economía con una oportunidad real. Para saber si este perfil es para ti, te haré un par de preguntas muy sencillas y así iré aprendiendo más sobre ti. Pero primero, ¿cuál es tu nombre?"
+  content: "¡Hola! Soy NAY, qué gusto que estés aquí. ¿Cuál es tu nombre?"
 };
 
 const INITIAL_MESSAGE_EN: Message = {
   role: 'assistant',
-  content: "Hi there! I'm glad you're here. Quick intro: we are looking for hardworking people willing to improve their economy through a real opportunity. To see if this aligns with you, I'll ask a couple of simple questions and learn more about your profile as we talk. But first, what is your name?"
+  content: "Hi! I'm NAY, I'm so glad you're here. What is your name?"
 };
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqualify, apiKey }) => {

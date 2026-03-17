@@ -78,17 +78,14 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-block px-4 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-semibold tracking-wider uppercase mb-6 shadow-[0_0_15px_rgba(212,175,55,0.15)] animate-pulse">
-              🔴 Cupos Limitados
-            </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1]">
-              Tu Esfuerzo Merece <br className="hidden sm:block"/>
-              <span className="text-gradient">Una Oportunidad Real</span>
+              Trabajas duro por tu familia. <br className="hidden sm:block"/>
+              <span className="text-gradient">Es hora de que tu esfuerzo te pague bien.</span>
             </h1>
             
             <p className="text-lg sm:text-xl text-gray-400 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">
-              Estamos buscando personas trabajadoras que quieran mejorar su economía de forma ética y legal. Si tienes ganas de salir adelante y disposición para aprender, hablemos.
+              Estamos buscando personas trabajadoras que quieran mejorar su economía. Si tienes ganas de salir adelante y disposición para aprender, hablemos.
             </p>
           </motion.div>
 
@@ -113,8 +110,8 @@ function App() {
                 }}
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-dark-900 via-dark-900/80 to-transparent pt-24 pb-6 px-6">
-                <p className="text-gray-100 font-bold text-lg mb-0.5">Asociación Estratégica</p>
-                <p className="text-gold-400 text-sm font-medium">Mentores y Directores</p>
+                <p className="text-gray-100 font-bold text-lg mb-0.5">Nay y Fani</p>
+                <p className="text-gold-400 text-sm font-medium">Capacitadores en Liderazgo y Emprendimiento</p>
               </div>
             </div>
           </motion.div>

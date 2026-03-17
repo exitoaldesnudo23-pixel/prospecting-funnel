@@ -11,12 +11,12 @@ interface ChatInterfaceProps {
 
 const INITIAL_MESSAGE_ES: Message = {
   role: 'assistant',
-  content: "Hola. Estamos buscando a latinos con ganas reales de salir adelante y mejorar su economía con un proyecto legal y ético. Para saber si esta oportunidad es para ti, te haré un par de preguntas muy sencillas. ¿Estás de acuerdo?"
+  content: "¡Hola! Qué gusto que estés aquí. Te cuento rápido: estamos buscando a latinos con ganas reales de salir adelante y mejorar su economía con una oportunidad real. Para saber si este perfil es para ti, te haré un par de preguntas muy sencillas y así iré aprendiendo más sobre ti. Pero primero, ¿cuál es tu nombre?"
 };
 
 const INITIAL_MESSAGE_EN: Message = {
   role: 'assistant',
-  content: "Hello. We are looking for hardworking people willing to improve their economy through an ethical growth project. To see if this opportunity is for you, I'll ask a couple of simple questions. Do you agree?"
+  content: "Hi there! I'm glad you're here. Quick intro: we are looking for hardworking people willing to improve their economy through a real opportunity. To see if this aligns with you, I'll ask a couple of simple questions and learn more about your profile as we talk. But first, what is your name?"
 };
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqualify, apiKey }) => {
@@ -90,8 +90,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
       {!language ? (
         <div className="flex-1 flex items-center justify-center p-6 bg-dark-900/50">
            <div className="text-center w-full max-w-sm">
-             <h3 className="text-xl font-bold text-gray-100 mb-2">Select Language / Selecciona tu Idioma</h3>
-             <p className="text-sm text-gray-400 mb-8">Para iniciar la evaluación / To start the evaluation</p>
+             <h3 className="text-xl font-bold text-gray-100 mb-2">¡Bienvenido! / Welcome!</h3>
+             <p className="text-sm text-gray-400 mb-8">Selecciona tu idioma para comenzar / Select your language to start</p>
              <div className="flex flex-col gap-4">
                 <button 
                   onClick={() => { setLanguage('es'); setMessages([INITIAL_MESSAGE_ES]); }}
@@ -170,7 +170,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
               </button>
             </div>
             <p className="text-center text-[10px] text-gray-500 mt-2">
-              {language === 'en' ? 'Private Expansion Project' : 'Proyecto de Expansión Privado'} &copy; {new Date().getFullYear()}
+              {language === 'en' ? 'Private Expansion Opportunity' : 'Oportunidad de Expansión Privada'} &copy; {new Date().getFullYear()}
             </p>
           </div>
         </>

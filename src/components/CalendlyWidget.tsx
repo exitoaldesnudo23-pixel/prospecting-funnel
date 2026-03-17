@@ -8,7 +8,7 @@ interface CalendlyWidgetProps {
 }
 
 export const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({ whatsappNumber }) => {
-  const wsLink = `https://wa.me/1${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent("Hola. Acabo de calificar en el asistente AI para el proyecto de expansión y me gustaría agendar la sesión de evaluación inicial.")}`;
+  const wsLink = `https://wa.me/1${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent("Hola. Acabo de calificar en el asistente AI para la oportunidad de expansión y me gustaría agendar la sesión de introducción.")}`;
 
   return (
     <motion.div 
@@ -26,7 +26,7 @@ export const CalendlyWidget: React.FC<CalendlyWidgetProps> = ({ whatsappNumber }
       </h2>
       
       <p className="text-gray-400 text-base mb-8 max-w-md">
-        Basado en tus respuestas, cumples con el perfil de liderazgo y disposición que buscamos. El siguiente paso es una breve llamada de evaluación.
+        Basado en tus respuestas, cumples con el perfil de liderazgo y disposición que buscamos. El siguiente paso es una breve llamada para conocernos.
       </p>
 
       {/* Calendly Inline Widget - Placeholder since user didn't give strict link yet */}

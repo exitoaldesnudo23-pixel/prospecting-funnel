@@ -11,12 +11,12 @@ interface ChatInterfaceProps {
 
 const INITIAL_MESSAGE_ES: Message = {
   role: 'assistant',
-  content: "¡Hola! Soy NAY, qué gusto que estés aquí. ¿Cuál es tu nombre?"
+  content: "¡Hola! Soy Alex 👋 Qué bueno que estés aquí. Para empezar, ¿me puedes decir tu nombre y cómo llegaste a este chat? ¿Fue por un flyer, un anuncio o te lo compartió Nay o Fani?"
 };
 
 const INITIAL_MESSAGE_EN: Message = {
   role: 'assistant',
-  content: "Hi! I'm NAY, I'm so glad you're here. What is your name?"
+  content: "Hi! I'm Alex 👋 Glad you're here. To get started, can you tell me your name and how you found us? Was it through a flyer, an ad, or did Nay or Fani share this with you?"
 };
 
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqualify, apiKey }) => {
@@ -70,38 +70,30 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto glass rounded-2xl overflow-hidden flex flex-col h-[600px] border border-dark-700 shadow-2xl relative">
+    <div className="w-full max-w-md mx-auto bg-dark-900/40 backdrop-blur-xl rounded-3xl overflow-hidden flex flex-col h-[600px] border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.5)] relative">
       {/* Premium Header */}
-      <div className="bg-dark-800/80 backdrop-blur-md p-4 border-b border-dark-700 flex items-center justify-between z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-600 to-gold-400 flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-            <UserRound className="text-dark-900" size={20} />
-          </div>
-          <div>
-            <h2 className="text-gray-100 font-semibold text-lg flex items-center gap-2">
-              {language === 'en' ? 'Expansion Assistant' : 'Asistente de Expansión'} <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            </h2>
-            <p className="text-xs text-gray-400">Hub de Expansión • {language === 'en' ? 'Regional Infrastructure' : 'Infraestructura Regional'}</p>
-          </div>
-        </div>
+      <div className="bg-transparent p-6 pb-2 text-center z-10">
+        <h2 className="text-white font-bold text-2xl mb-1">
+          Bienvenido
+        </h2>
       </div>
 
       {/* Language Selector Output (If not selected) */}
       {!language ? (
-        <div className="flex-1 flex items-center justify-center p-6 bg-dark-900/50">
+        <div className="flex-1 flex items-center justify-center p-6 bg-transparent">
            <div className="text-center w-full max-w-sm">
-             <h3 className="text-xl font-bold text-gray-100 mb-2">¡Bienvenido! / Welcome!</h3>
-             <p className="text-sm text-gray-400 mb-8">Selecciona tu idioma para comenzar / Select your language to start</p>
-             <div className="flex flex-col gap-4">
+             <h3 className="text-lg font-bold text-white mb-2">How can we help? / ¿Cómo podemos ayudarte?</h3>
+             <p className="text-xs text-gray-300 mb-8">Selecciona tu idioma / Select your language</p>
+             <div className="flex flex-row justify-center gap-4">
                 <button 
                   onClick={() => { setLanguage('es'); setMessages([INITIAL_MESSAGE_ES]); }}
-                  className="w-full bg-dark-800 hover:bg-dark-700 border border-dark-600 text-gray-100 py-4 rounded-xl font-medium transition-all hover:border-gold-500/50 hover:shadow-[0_0_15px_rgba(212,175,55,0.15)]"
+                  className="flex-1 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-3 rounded-xl font-medium transition-all"
                 >
                   Español
                 </button>
                 <button 
                   onClick={() => { setLanguage('en'); setMessages([INITIAL_MESSAGE_EN]); }}
-                  className="w-full bg-dark-800 hover:bg-dark-700 border border-dark-600 text-gray-100 py-4 rounded-xl font-medium transition-all hover:border-gold-500/50 hover:shadow-[0_0_15px_rgba(212,175,55,0.15)]"
+                  className="flex-1 bg-white/10 hover:bg-white/20 border border-white/30 text-white py-3 rounded-xl font-medium transition-all"
                 >
                   English
                 </button>
@@ -111,7 +103,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
       ) : (
         <>
           {/* Chat Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-dark-900/50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-transparent border-t border-white/10 mt-4">
         <AnimatePresence>
           {messages.map((msg, idx) => (
             <motion.div
@@ -122,10 +114,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed ${
+                className={`max-w-[85%] rounded-2xl p-4 text-sm leading-relaxed shadow-sm ${
                   msg.role === 'user'
-                    ? 'bg-gradient-to-br from-gold-600 to-gold-500 text-dark-900 rounded-tr-none font-medium'
-                    : 'glass-gold text-gray-100 rounded-tl-none border border-gold-500/20'
+                    ? 'bg-white/20 text-white rounded-tr-none font-medium'
+                    : 'bg-black/30 backdrop-blur-md border border-white/10 text-white rounded-tl-none'
                 }`}
               >
                 {msg.content}
@@ -138,10 +130,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
               animate={{ opacity: 1 }}
               className="flex justify-start"
             >
-              <div className="glass-gold py-3 px-4 rounded-2xl rounded-tl-none border border-gold-500/20 flex gap-1 items-center">
-                <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce"></span>
-                <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                <span className="w-1.5 h-1.5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+              <div className="bg-black/30 backdrop-blur-md py-3 px-4 rounded-2xl rounded-tl-none border border-white/10 flex gap-1 items-center">
+                <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></span>
+                <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
               </div>
             </motion.div>
           )}
@@ -150,7 +142,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
           </div>
 
           {/* Input Area */}
-          <div className="p-4 bg-dark-800/80 backdrop-blur-md border-t border-dark-700 w-full relative z-20">
+          <div className="p-4 bg-black/40 backdrop-blur-md border-t border-white/10 w-full relative z-20">
             <div className="relative flex items-center">
               <input
                 type="text"
@@ -158,19 +150,19 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder={language === 'en' ? "Type your response..." : "Escribe tu respuesta..."}
-                className="w-full bg-dark-900 border border-dark-600 rounded-full px-5 py-3 pr-12 text-sm text-gray-200 focus:outline-none focus:border-gold-500/50 focus:ring-1 focus:ring-gold-500/50 transition-all placeholder:text-gray-500"
+                className="w-full bg-white/10 border border-white/20 rounded-lg px-5 py-3 pr-12 text-sm text-white focus:outline-none focus:ring-2 focus:ring-gold-400 transition-all placeholder:text-gray-300 shadow-inner"
                 disabled={isLoading}
               />
               <button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
-                className="absolute right-2 p-2 bg-gradient-to-r from-gold-600 to-gold-400 text-dark-900 rounded-full hover:shadow-[0_0_10px_rgba(212,175,55,0.4)] transition-all disabled:opacity-50"
+                className="absolute right-2 p-2 bg-white/20 text-white rounded-md hover:bg-white/30 transition-all disabled:opacity-50"
               >
                 <Send size={16} />
               </button>
             </div>
-            <p className="text-center text-[10px] text-gray-500 mt-2">
-              {language === 'en' ? 'Private Expansion Opportunity' : 'Oportunidad de Expansión Privada'} &copy; {new Date().getFullYear()}
+            <p className="text-center text-[10px] text-gray-400 mt-3 font-medium tracking-wide">
+              {language === 'en' ? 'Nay & Fani · Private Invitation' : 'Nay & Fani · Por invitación'} &copy; {new Date().getFullYear()}
             </p>
           </div>
         </>

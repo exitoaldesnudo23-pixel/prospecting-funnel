@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { ChatInterface } from './components/ChatInterface';
-import { CalendlyWidget } from './components/CalendlyWidget';
+import { BookingWidget } from './components/BookingWidget';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Key } from 'lucide-react';
 
 function App() {
   const [funnelState, setFunnelState] = useState<'chat' | 'qualified' | 'disqualified'>('chat');
   const [apiKey, setApiKey] = useState(import.meta.env.VITE_OPENROUTER_API_KEY || '');
-  const [isConfiguring, setIsConfiguring] = useState(!import.meta.env.VITE_OPENROUTER_API_KEY);
+  const [isConfiguring, setIsConfiguring] = useState(false); // Temporarily bypassed: !import.meta.env.VITE_OPENROUTER_API_KEY);
 
   const handleQualify = () => setFunnelState('qualified');
   const handleDisqualify = () => setFunnelState('disqualified');
@@ -44,76 +44,53 @@ function App() {
 
   return (
     <div className="min-h-screen bg-dark-900 flex flex-col relative overflow-x-hidden font-sans">
-      {/* AI Generated Luxury Background */}
+      {/* Background Photo */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-screen"
-          style={{ backgroundImage: "url('/hero-bg.png')" }}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/tafolla.png')" }}
         ></div>
-        {/* Gradients on top for extra depth */}
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gold-600/5 blur-[120px] mix-blend-screen animate-pulse-slow"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[40%] h-[60%] rounded-full bg-blue-600/5 blur-[120px] mix-blend-screen animate-pulse-slow object-right"></div>
+        {/* Dark overlay for readability - reduced darkness by 70% for more life */}
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-900/50 via-dark-900/20 to-dark-900/40"></div>
+        
+        {/* Subtle gold/blue glows */}
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gold-600/5 blur-[120px] animate-pulse-slow"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[40%] h-[60%] rounded-full bg-blue-600/5 blur-[120px] animate-pulse-slow"></div>
       </div>
 
-      {/* Navbar Premium */}
-      <nav className="border-b border-dark-800 bg-dark-900/80 backdrop-blur-md sticky top-0 z-50">
+      {/* Navbar */}
+      <nav className="border-b border-dark-800/50 bg-dark-900/60 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-black tracking-tight flex items-center gap-2">
-             <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-dark-900 text-sm">HE</span>
-             <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">Hub de Expansión</span>
+             <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-dark-900 text-sm font-bold">NF</span>
+             <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-300">Nay &amp; Fani</span>
           </div>
           <div className="hidden sm:block text-xs font-medium text-gold-400 uppercase tracking-widest border border-gold-500/20 px-3 py-1 rounded-full bg-gold-500/10">
-            Apertura de Expansión
+            Por Invitación
           </div>
         </div>
       </nav>
 
       {/* Main Content: Split Layout (Hero Banner) */}
-      <main className="flex-1 container mx-auto px-6 py-12 lg:py-20 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+      <main className="flex-1 container mx-auto px-6 py-12 lg:py-20 relative z-10 flex flex-col lg:flex-row-reverse items-center justify-between gap-12 lg:gap-24">
         
-        {/* Left Column: Copy & Photo */}
-        <div className="flex-1 text-center lg:text-left animate-fade-in flex flex-col items-center lg:items-start w-full max-w-2xl">
+        {/* Right Column: Copy (Now visually on the right due to flex-row-reverse) */}
+        <div className="flex-1 text-center lg:text-left animate-fade-in flex flex-col justify-center w-full max-w-2xl">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1]">
-              Trabajas duro por tu familia. <br className="hidden sm:block"/>
-              <span className="text-gradient">Es hora de que tu esfuerzo te pague bien.</span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4 leading-[1.1] text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]">
+              Trabajas duro por tu familia.
             </h1>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light italic tracking-wide mb-8 leading-[1.3] text-gold-400 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]">
+              Es hora de que tu esfuerzo te pague bien.
+            </h2>
             
-            <p className="text-lg sm:text-xl text-gray-400 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">
+            <p className="text-base sm:text-lg text-gray-100 mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] bg-dark-900/20 p-4 rounded-xl backdrop-blur-sm border border-white/5">
               Estamos buscando personas trabajadoras que quieran mejorar su economía. Si tienes ganas de salir adelante y disposición para aprender, hablemos.
             </p>
-          </motion.div>
-
-          {/* User's Photo Card */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full max-w-sm mx-auto lg:mx-0 group relative"
-          >
-            {/* Glow Effect behind image */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-gold-600 to-yellow-400 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-            
-            <div className="relative rounded-2xl overflow-hidden border border-dark-700 bg-dark-800 aspect-[5/4] sm:aspect-[4/3] flex items-center justify-center shadow-2xl">
-              <img 
-                src="/couple.jpg" 
-                alt="Directores de Expansión" 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement?.classList.add('fallback-bg');
-                }}
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-dark-900 via-dark-900/80 to-transparent pt-24 pb-6 px-6">
-                <p className="text-gray-100 font-bold text-lg mb-0.5">Nay y Fani</p>
-                <p className="text-gold-400 text-sm font-medium">Capacitadores en Liderazgo y Emprendimiento</p>
-              </div>
-            </div>
           </motion.div>
         </div>
 
@@ -144,7 +121,7 @@ function App() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                 >
-                  <CalendlyWidget whatsappNumber="8479979255" />
+                  <BookingWidget whatsappNumber="8479979255" />
                 </motion.div>
               )}
 
@@ -175,7 +152,7 @@ function App() {
       {/* Footer */}
       <footer className="border-t border-dark-800 bg-dark-900/60 mt-auto">
         <div className="container mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between text-xs text-gray-600">
-          <p>&copy; {new Date().getFullYear()} Hub de Expansión. Una iniciativa comercial privada.</p>
+          <p>&copy; {new Date().getFullYear()} Nay &amp; Fani. Una oportunidad de crecimiento personal.</p>
           <p className="mt-2 md:mt-0">Confidencialidad garantizada. Las reuniones son solo por invitación.</p>
         </div>
       </footer>

@@ -59,16 +59,19 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
         const jsonMatch = response.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           try {
-            const data = JSON.parse(jsonMatch[0]);
+            // Limpiar posibles backticks de markdown que el LLM a veces incluye
+            const cleanJson = jsonMatch[0].replace(/^```json\s*/i, '').replace(/\s*```$/, '').trim();
+            const data = JSON.parse(cleanJson);
             console.log("Parsed AI Payload:", data);
+            
             // Hacer la petición silenciosa al backend
             fetch('https://deploy-netlify-delta.vercel.app/api/sistema-vision', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                accion: 'NUEVO_PROSPECTO',
+                accion: 'NUEVO_LEAD_EMBUDO',
                 titulo: `Llamada estratégica — ${data.nombre || 'Prospecto'}`,
-                tipo: 'NEGOCIO',
+                tipo: 'EMBUDO',
                 fuente: 'embudo',
                 fecha_iso: data.fecha_iso,
                 fecha_legible: data.fecha_legible,
@@ -78,6 +81,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
                 nombre: data.nombre,
                 telefono: data.telefono,
                 participantes: [{ nombre: data.nombre, telefono: data.telefono }],
+                descripcion: `Cita agendada vía Agente IA.\nNombre: ${data.nombre}\nTeléfono: ${data.telefono}\nMotivación: ${data.dolor_detectado || 'No especificado'}`,
                 dolor_detectado: data.dolor_detectado || 'No especificado'
               }),
             }).then(res => res.json()).then(console.log).catch(console.error);

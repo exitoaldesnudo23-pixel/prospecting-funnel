@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ChatInterface } from './components/ChatInterface';
-import { BookingWidget } from './components/BookingWidget';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Key } from 'lucide-react';
 
@@ -120,8 +119,17 @@ function App() {
                   key="qualified"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
+                  className="w-full p-8 md:p-12 rounded-2xl glass text-center border-dark-600 shadow-xl"
                 >
-                  <BookingWidget whatsappNumber="8479979255" />
+                  <div className="text-gold-400 mb-6 flex justify-center">
+                    <svg className="w-20 h-20 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-200 mb-4">¡Cita Agendada!</h2>
+                  <p className="text-base text-gray-400 leading-relaxed">
+                    Hemos registrado tu solicitud correctamente. En breve nos comunicaremos contigo vía WhatsApp para confirmar los detalles.
+                  </p>
                 </motion.div>
               )}
 

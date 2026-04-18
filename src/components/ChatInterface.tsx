@@ -55,15 +55,53 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
       
       let cleanResponse = response;
       if (response.includes('[CALIFICADO]')) {
-        setTimeout(onQualify, 2000);
-        cleanResponse = language === 'en' 
-          ? "Excellent! Your profile perfectly matches our work ethic. I will prepare the details for you."
-          : "¡Excelente! Tu perfil encaja perfectamente con nuestra ética de trabajo. Voy a prepararte los detalles.";
+        // Extraer el JSON oculto
+        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            const data = JSON.parse(jsonMatch[0]);
+            // Hacer la petición silenciosa al backend
+            fetch('https://deploy-netlify-delta.vercel.app/api/sistema-vision', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                accion: 'NUEVO_LEAD_EMBUDO',
+                titulo: `Llamada estratégica — ${data.nombre || 'Prospecto'}`,
+                tipo: 'LLAMADA',
+                fuente: 'embudo',
+                fecha_iso: data.fecha_iso,
+                fecha_legible: data.fecha_legible,
+                hora_legible: data.hora_legible,
+                emoji_tipo: '📞',
+                calendar_color: '7',
+                nombre: data.nombre,
+                telefono: data.telefono,
+                participantes: [{ nombre: data.nombre, telefono: data.telefono }],
+                descripcion: `Cita agendada vía Agente IA.\nNombre: ${data.nombre}\nTeléfono: ${data.telefono}\nMotivación: ${data.dolor_detectado || 'No especificado'}`,
+                dolor_detectado: data.dolor_detectado
+              }),
+            }).catch(console.error);
+          } catch (e) {
+            console.error("Error parsing JSON from AI", e);
+          }
+        }
+        
+        // Limpiar el mensaje para no mostrar la etiqueta ni el JSON al usuario
+        cleanResponse = response.replace(/\[CALIFICADO\][\s\S]*$/, '').trim();
+        if (!cleanResponse) {
+          cleanResponse = language === 'en' 
+            ? "See you soon! We will send you a WhatsApp with the details."
+            : "¡Nos vemos pronto! Te enviaremos un WhatsApp con los detalles.";
+        }
+        // Ya NO llamamos a onQualify() para que el chat siga en pantalla y no salga el formulario
       } else if (response.includes('[NO_CALIFICADO]')) {
-        setTimeout(onDisqualify, 2000);
-        cleanResponse = language === 'en'
-          ? "I appreciate your time. At this moment, we are looking for profiles with a different alignment. I wish you success."
-          : "Aprecio tu tiempo. En este momento, buscamos perfiles con una alineación diferente. Te deseo mucho éxito.";
+        setTimeout(onDisqualify, 3000);
+        cleanResponse = response.replace(/\[NO_CALIFICADO\]/g, '').trim();
+        if (!cleanResponse) {
+          cleanResponse = language === 'en'
+            ? "I appreciate your time. At this moment, we are looking for profiles with a different alignment. I wish you success."
+            : "Aprecio tu tiempo. En este momento, buscamos perfiles con una alineación diferente. Te deseo mucho éxito.";
+        }
       }
 
       setMessages(prev => [...prev, { role: 'assistant', content: cleanResponse }]);

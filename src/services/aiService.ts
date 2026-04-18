@@ -3,10 +3,9 @@ export interface Message {
   content: string;
 }
 
-export const getAIResponse = async (messages: Message[], apiKey: string, language: 'es' | 'en' = 'es'): Promise<string> => {
-  if (!apiKey) {
-    throw new Error("No OpenRouter API Key provided.");
-  }
+const PARSE_PROXY = 'https://deploy-netlify-delta.vercel.app/api/parse';
+
+export const getAIResponse = async (messages: Message[], _apiKey: string, language: 'es' | 'en' = 'es'): Promise<string> => {
 
   const systemPromptEs: Message = {
     role: 'system',
@@ -25,11 +24,14 @@ REGLAS DE ORO:
 
 CONTEXTO CLAVE: Vienen de un flyer, anuncio, o tarjeta. Los flyers a veces suenan a empleo. Aclara que esto no es un empleo, es una oportunidad.
 
-FLUJO DE CONVERSACIÓN:
+FLUJO ESTRICTO DE CONVERSACIÓN (¡SÍGUELO PASO A PASO Y ESPERA RESPUESTA!):
 PASO 1 (ya hecho): Se preguntó su nombre y origen.
-PASO 2: Usa su nombre. Pregunta qué los motivó a escribir para evaluar su situación (qué cambiarían de su situación actual y cuánto tiempo libre tienen).
-PASO 3: Una vez que sepas que tienen tiempo y ganas (califican), ofréceles 2 opciones de fecha y hora después de las 4 PM.
-PASO 4: Una vez que elijan o acepten una de las opciones de horario, escribe EXACTAMENTE: [CALIFICADO] (Esto abrirá el formulario en el sistema).
+PASO 2: Usa su nombre. Haz UNA sola pregunta: ¿Qué te motivó a checar esto? (ESPERA A QUE RESPONDA).
+PASO 3: Evalúa su respuesta. Haz UNA sola pregunta: ¿Cuánto tiempo libre crees que podrías dedicarle a la semana? (ESPERA A QUE RESPONDA).
+PASO 4: Ofréceles 2 opciones de fecha y hora después de las 4 PM. (Ej: "¿Te queda mejor mañana a las 5 PM o el jueves a las 6 PM?") (ESPERA A QUE ELIJAN).
+PASO 5: ÚNICAMENTE después de que hayan aceptado o elegido uno de los horarios, escribe EXACTAMENTE: [CALIFICADO]. NUNCA ESCRIBAS ESTA PALABRA ANTES.
+
+REGLA INQUEBRANTABLE: NUNCA, bajo NINGUNA circunstancia, hagas más de UNA (1) sola pregunta por mensaje. Tus mensajes deben ser increíblemente cortos (máximo 2 o 3 líneas). Actúa como si estuvieras escribiendo desde un celular.
 
 Si alguien busca solo sueldo fijo, dinero sin esfuerzo o es muy negativo, despídelo y escribe EXACTAMENTE: [NO_CALIFICADO]. Habla SOLO en Español.`
   };
@@ -51,11 +53,14 @@ GOLDEN RULES:
 
 KEY CONTEXT: They come from a flyer, ad, or card. Flyers sometimes sound like a job. Clarify that this is not a job, it is an opportunity.
 
-CONVERSATION FLOW:
+STRICT CONVERSATION FLOW (FOLLOW STEP BY STEP AND WAIT FOR RESPONSE!):
 STEP 1 (already done): Asked for their name and origin.
-STEP 2: Use their name. Ask what motivated them to write to evaluate their situation (what they would change about their current situation and how much free time they have).
-STEP 3: Once you know they have time and drive (they qualify), offer them 2 date and time options after 4 PM.
-STEP 4: Once they choose or accept one of the time options, write EXACTLY: [CALIFICADO] (This will open the system form).
+STEP 2: Use their name. Ask ONE single question: What motivated you to check this out? (WAIT FOR THEM TO ANSWER).
+STEP 3: Evaluate their response. Ask ONE single question: How much free time do you think you could dedicate to this per week? (WAIT FOR THEM TO ANSWER).
+STEP 4: Offer them 2 date and time options after 4 PM. (e.g. "Would tomorrow at 5 PM or Thursday at 6 PM work better for you?") (WAIT FOR THEM TO CHOOSE).
+STEP 5: ONLY after they have accepted or chosen one of the time options, write EXACTLY: [CALIFICADO]. NEVER WRITE THIS WORD BEFORE THEY CHOOSE.
+
+UNBREAKABLE RULE: NEVER, under ANY circumstances, ask more than ONE (1) single question per message. Your messages must be incredibly short (maximum 2 or 3 lines). Act as if you are texting from a phone.
 
 If someone is only looking for a fixed salary, effortless money, or is very negative, politely dismiss them and write EXACTLY: [NO_CALIFICADO]. Speak ONLY in English.`
   };
@@ -71,36 +76,25 @@ If someone is only looking for a fixed salary, effortless money, or is very nega
   };
 
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch(PARSE_PROXY, {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": window.location.origin || "http://localhost",
-        "X-Title": "Prospecting Funnel AI",
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
-        // Fallback to older model if 2.5 is not available
-        if (response.status === 404 || response.status === 400) {
-            payload.model = "google/gemini-flash-1.5";
-            const retryResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-              method: "POST",
-              headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "HTTP-Referer": window.location.origin || "http://localhost",
-                "X-Title": "Prospecting Funnel AI",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(payload)
-            });
-            if (retryResponse.ok) {
-                const retryData = await retryResponse.json();
-                return retryData.choices[0].message.content;
-            }
+      if (response.status === 404 || response.status === 400) {
+        payload.model = "google/gemini-flash-1.5";
+        const retryResponse = await fetch(PARSE_PROXY, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (retryResponse.ok) {
+          const retryData = await retryResponse.json();
+          return retryData.choices[0].message.content;
         }
+      }
       const errorData = await response.json();
       throw new Error(errorData.error?.message || "Error al conectar con OpenRouter AI");
     }

@@ -48,6 +48,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
       // Pass the selected language strictly to the AI service
       const response = await getAIResponse(chatHistory, apiKey, language || 'es');
       
+      // Simulate typing delay based on response length
+      const words = response.split(' ').length;
+      const delayMs = Math.min(Math.max(words * 30, 800), 3000);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      
       let cleanResponse = response;
       if (response.includes('[CALIFICADO]')) {
         setTimeout(onQualify, 2000);

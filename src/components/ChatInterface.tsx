@@ -60,29 +60,29 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
         if (jsonMatch) {
           try {
             const data = JSON.parse(jsonMatch[0]);
+            console.log("Parsed AI Payload:", data);
             // Hacer la petición silenciosa al backend
             fetch('https://deploy-netlify-delta.vercel.app/api/sistema-vision', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                accion: 'NUEVO_LEAD_EMBUDO',
+                accion: 'NUEVO_PROSPECTO',
                 titulo: `Llamada estratégica — ${data.nombre || 'Prospecto'}`,
-                tipo: 'LLAMADA',
+                tipo: 'NEGOCIO',
                 fuente: 'embudo',
                 fecha_iso: data.fecha_iso,
                 fecha_legible: data.fecha_legible,
                 hora_legible: data.hora_legible,
-                emoji_tipo: '📞',
+                emoji_tipo: '💼',
                 calendar_color: '7',
                 nombre: data.nombre,
                 telefono: data.telefono,
                 participantes: [{ nombre: data.nombre, telefono: data.telefono }],
-                descripcion: `Cita agendada vía Agente IA.\nNombre: ${data.nombre}\nTeléfono: ${data.telefono}\nMotivación: ${data.dolor_detectado || 'No especificado'}`,
-                dolor_detectado: data.dolor_detectado
+                dolor_detectado: data.dolor_detectado || 'No especificado'
               }),
-            }).catch(console.error);
+            }).then(res => res.json()).then(console.log).catch(console.error);
           } catch (e) {
-            console.error("Error parsing JSON from AI", e);
+            console.error("Error parsing JSON from AI", e, "Raw output:", jsonMatch[0]);
           }
         }
         

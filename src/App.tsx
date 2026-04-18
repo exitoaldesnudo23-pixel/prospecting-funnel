@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChatInterface } from './components/ChatInterface';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Key } from 'lucide-react';
+import { Key, CheckCircle } from 'lucide-react';
 
 function App() {
   const [funnelState, setFunnelState] = useState<'chat' | 'qualified' | 'disqualified'>('chat');
@@ -119,16 +119,14 @@ function App() {
                   key="qualified"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="w-full p-8 md:p-12 rounded-2xl glass text-center border-dark-600 shadow-xl"
+                  className="w-full p-8 md:p-12 rounded-2xl glass text-center border-dark-600 shadow-[0_0_40px_rgba(37,211,102,0.15)] bg-dark-900/80 backdrop-blur-xl"
                 >
-                  <div className="text-gold-400 mb-6 flex justify-center">
-                    <svg className="w-20 h-20 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                  <div className="text-green-500 mb-6 flex justify-center">
+                    <CheckCircle size={64} className="animate-pulse" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-200 mb-4">¡Cita Agendada!</h2>
-                  <p className="text-base text-gray-400 leading-relaxed">
-                    Hemos registrado tu solicitud correctamente. En breve nos comunicaremos contigo vía WhatsApp para confirmar los detalles.
+                  <h2 className="text-3xl font-bold text-white mb-4">¡Cita Confirmada!</h2>
+                  <p className="text-lg text-gray-300 leading-relaxed max-w-sm mx-auto">
+                    La fecha y hora han sido reservadas en la agenda. En breve recibirás un <b>mensaje de WhatsApp</b> con los detalles y la ubicación. ¡Nos vemos pronto!
                   </p>
                 </motion.div>
               )}

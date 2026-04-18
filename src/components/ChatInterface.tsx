@@ -48,9 +48,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
       // Pass the selected language strictly to the AI service
       const response = await getAIResponse(chatHistory, apiKey, language || 'es');
       
-      // Simulate typing delay based on response length
+      // Simulate typing delay based on response length (make it feel human)
       const words = response.split(' ').length;
-      const delayMs = Math.min(Math.max(words * 30, 800), 3000);
+      const delayMs = Math.min(Math.max(words * 60, 2000), 5000); // Increased delay
       await new Promise(resolve => setTimeout(resolve, delayMs));
       
       let cleanResponse = response;
@@ -84,16 +84,28 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
                 descripcion: `Cita agendada vía Agente IA.\nNombre: ${data.nombre}\nTeléfono: ${data.telefono}\nMotivación: ${data.dolor_detectado || 'No especificado'}`,
                 dolor_detectado: data.dolor_detectado || 'No especificado'
               }),
-            }).then(res => res.json()).then(console.log).catch(console.error);
+            }).catch(console.error);
+            // Hacer la petición silenciosa al backend de agendamiento (Vercel)
+            fetch('/api/schedule', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                date: data.fecha_iso ? data.fecha_iso.split('T')[0] : new Date().toISOString().split('T')[0],
+                time: data.hora_legible || '4:00 PM', // Fallback
+                phone: data.telefono,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+              }),
+            }).then(res => res.json()).then(res => console.log('Schedule API:', res)).catch(console.error);
+
           } catch (e) {
             console.error("Error parsing JSON from AI", e, "Raw output:", jsonMatch[0]);
           }
         }
         
         // Limpiar el mensaje para no mostrar la etiqueta ni el JSON al usuario
-        // Mantenemos la despedida natural de Alex en lugar de sobreescribirla
         cleanResponse = response.replace(/\[CALIFICADO\][\s\S]*$/, '').trim();
-        // Ya NO llamamos a onQualify() para que el chat siga en pantalla y no salga el formulario
+        // Disparamos la transición al calendario
+        setTimeout(onQualify, 2500);
       } else if (response.includes('[NO_CALIFICADO]')) {
         setTimeout(onDisqualify, 3000);
         cleanResponse = response.replace(/\[NO_CALIFICADO\]/g, '').trim();

@@ -64,14 +64,14 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
             const data = JSON.parse(cleanJson);
             console.log("Parsed AI Payload:", data);
             
-            // Hacer la petición silenciosa al backend
+            // Hacer la petición silenciosa al backend usando NUEVO_PROSPECTO (soportado en Vercel)
             fetch('https://deploy-netlify-delta.vercel.app/api/sistema-vision', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                accion: 'NUEVO_LEAD_EMBUDO',
+                accion: 'NUEVO_PROSPECTO',
                 titulo: `Llamada estratégica — ${data.nombre || 'Prospecto'}`,
-                tipo: 'EMBUDO',
+                tipo: 'NEGOCIO',
                 fuente: 'embudo',
                 fecha_iso: data.fecha_iso,
                 fecha_legible: data.fecha_legible,
@@ -91,12 +91,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
         }
         
         // Limpiar el mensaje para no mostrar la etiqueta ni el JSON al usuario
+        // Mantenemos la despedida natural de Alex en lugar de sobreescribirla
         cleanResponse = response.replace(/\[CALIFICADO\][\s\S]*$/, '').trim();
-        if (!cleanResponse) {
-          cleanResponse = language === 'en' 
-            ? "See you soon! We will send you a WhatsApp with the details."
-            : "¡Nos vemos pronto! Te enviaremos un WhatsApp con los detalles.";
-        }
         // Ya NO llamamos a onQualify() para que el chat siga en pantalla y no salga el formulario
       } else if (response.includes('[NO_CALIFICADO]')) {
         setTimeout(onDisqualify, 3000);

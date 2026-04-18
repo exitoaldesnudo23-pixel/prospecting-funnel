@@ -77,7 +77,7 @@ If the prospect is very negative, write EXACTLY: [NO_CALIFICADO]. Speak ONLY in 
 
   const payload = {
     // Restaurando Gemini Pro (versión avanzada y veloz)
-    model: "google/gemini-2.5-flash", 
+    model: "google/gemini-2.5-flash",
     messages: [systemPrompt, ...messages],
     temperature: 0.7,
     max_tokens: 250,

@@ -26,9 +26,24 @@ export default async function handler(req: any, res: any) {
       // For now, let's just log it if they aren't set, so the app doesn't crash during development
     }
 
+    // Helper to convert "5:00 PM" to "17:00"
+    function convertTimeTo24Hour(time12h: string): string {
+      const parts = time12h.split(' ');
+      let time = parts[0];
+      let modifier = parts[1] || 'PM'; // default to PM if missing
+      
+      let [hours, minutes] = time.split(':');
+      if (!minutes) minutes = '00';
+      if (hours === '12') hours = '00';
+      if (modifier.toUpperCase() === 'PM') hours = (parseInt(hours, 10) + 12).toString();
+      
+      return `${hours.padStart(2, '0')}:${minutes}`;
+    }
+
     // Combine date and time into ISO strings for Google Calendar
     // Assuming format: date 'YYYY-MM-DD', time 'HH:mm'
-    const startDateTime = new Date(`${date}T${time}:00${timezone ? '' : 'Z'}`); // Simplification
+    const time24 = convertTimeTo24Hour(time);
+    const startDateTime = new Date(`${date}T${time24}:00${timezone ? '' : 'Z'}`); // Simplification
     // Add 1 hour for end time
     const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
 
@@ -82,31 +97,34 @@ export default async function handler(req: any, res: any) {
       console.log('No Google credentials found. Skipping calendar insertion.');
     }
 
-    // 3. Send SMS via Twilio
+    // 3. Send SMS/WhatsApp via Twilio
     if (twilioSid && twilioToken && twilioPhone) {
       const client = twilio(twilioSid, twilioToken);
+      const fromWhatsApp = twilioPhone.startsWith('whatsapp:') ? twilioPhone : `whatsapp:${twilioPhone}`;
 
-      // SMS to Prospect
+      // WhatsApp to Prospect
       try {
+        const toProspect = phone.startsWith('whatsapp:') ? phone : `whatsapp:${phone.startsWith('+') ? phone : '+' + phone}`;
         await client.messages.create({
           body: `¡Hola! Tu llamada estratégica está confirmada para el ${date} a las ${time}. Nos comunicaremos a este número. ¡Saludos!`,
-          from: twilioPhone,
-          to: phone,
+          from: fromWhatsApp,
+          to: toProspect,
         });
       } catch (smsErr) {
-        console.error('Error sending SMS to prospect:', smsErr);
+        console.error('Error sending WhatsApp to prospect:', smsErr);
       }
 
-      // SMS to Admins (Nay and Fani)
+      // WhatsApp to Admins (Nay and Fani)
       for (const admin of admins) {
         try {
+          const toAdmin = admin.startsWith('whatsapp:') ? admin : `whatsapp:${admin}`;
           await client.messages.create({
             body: `¡NUEVA CITA! Un prospecto ha agendado para el ${date} a las ${time}. Teléfono: ${phone}.`,
-            from: twilioPhone,
-            to: admin,
+            from: fromWhatsApp,
+            to: toAdmin,
           });
         } catch (adminSmsErr) {
-          console.error(`Error sending SMS to admin ${admin}:`, adminSmsErr);
+          console.error(`Error sending WhatsApp to admin ${admin}:`, adminSmsErr);
         }
       }
     }

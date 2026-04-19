@@ -101,6 +101,7 @@ export default async function handler(req: any, res: any) {
     if (twilioSid && twilioToken && twilioPhone) {
       const client = twilio(twilioSid, twilioToken);
       const fromWhatsApp = twilioPhone.startsWith('whatsapp:') ? twilioPhone : `whatsapp:${twilioPhone}`;
+      const fromSMS = twilioPhone.replace('whatsapp:', '');
 
       // WhatsApp to Prospect
       try {
@@ -114,17 +115,17 @@ export default async function handler(req: any, res: any) {
         console.error('Error sending WhatsApp to prospect:', smsErr);
       }
 
-      // WhatsApp to Admins (Nay and Fani)
+      // REGULAR SMS to Admins (Nay and Fani)
       for (const admin of admins) {
         try {
-          const toAdmin = admin.startsWith('whatsapp:') ? admin : `whatsapp:${admin}`;
+          const toAdminSMS = admin.replace('whatsapp:', '');
           await client.messages.create({
             body: `¡NUEVA CITA! Un prospecto ha agendado para el ${date} a las ${time}. Teléfono: ${phone}.`,
-            from: fromWhatsApp,
-            to: toAdmin,
+            from: fromSMS,
+            to: toAdminSMS,
           });
         } catch (adminSmsErr) {
-          console.error(`Error sending WhatsApp to admin ${admin}:`, adminSmsErr);
+          console.error(`Error sending SMS to admin ${admin}:`, adminSmsErr);
         }
       }
     }

@@ -64,29 +64,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onQualify, onDisqu
             const data = JSON.parse(cleanJson);
             console.log("Parsed AI Payload:", data);
             
-            // Hacer la petición silenciosa al backend usando NUEVO_PROSPECTO (soportado en Vercel)
-            fetch('https://deploy-netlify-delta.vercel.app/api/sistema-vision', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                accion: 'NUEVO_PROSPECTO',
-                titulo: `Llamada estratégica — ${data.nombre || 'Prospecto'}`,
-                tipo: 'NEGOCIO',
-                fuente: 'embudo',
-                fecha_iso: data.fecha_iso,
-                fecha_legible: data.fecha_legible,
-                hora_legible: data.hora_legible,
-                emoji_tipo: '💼',
-                calendar_color: '7',
-                nombre: data.nombre,
-                telefono: data.telefono,
-                participantes: [{ nombre: data.nombre, telefono: data.telefono }],
-                descripcion: `Cita agendada vía Agente IA.\nNombre: ${data.nombre}\nTeléfono: ${data.telefono}\nMotivación: ${data.dolor_detectado || 'No especificado'}`,
-                dolor_detectado: data.dolor_detectado || 'No especificado'
-              }),
-            }).catch(console.error);
-            // Hacer la petición silenciosa al backend de agendamiento (Vercel)
-            fetch('/api/schedule', {
+            // Hacer la petición directa al backend de agendamiento (Vercel)
+            // Se usa la URL absoluta para que funcione incluso si prueban en localhost
+            fetch('https://nayfani08.com/api/schedule', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
